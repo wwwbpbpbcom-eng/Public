@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>التقاط صورة بالكاميرا</title>
+<style>
+body { font-family: Arial, sans-serif; text-align: center; background: #f5f5f5; }
+video, canvas { margin-top: 10px; border: 2px solid #333; }
+button { margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>📸 تجربة التقاط صورة</h1>
+<video id="video" width="300" autoplay></video><br>
+<button id="snap">التقط صورة</button><br>
+<canvas id="canvas" width="300" height="200"></canvas><br>
+<a id="downloadLink" style="display:none">تحميل الصورة</a>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+const downloadLink = document.getElementById('downloadLink');
+
+// طلب إذن الكاميرا
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => { video.srcObject = stream; })
+  .catch(err => { alert("تم رفض الوصول للكاميرا"); console.error(err); });
+
+// التقاط الصورة
+document.getElementById("snap").addEventListener("click", () => {
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const dataURL = canvas.toDataURL("image/png");
+  
+  // إنشاء رابط تحميل
+  downloadLink.href = dataURL;
+  downloadLink.download = "photo.png";
+  downloadLink.textContent = "تحميل الصورة";
+  downloadLink.style.display = "inline";
+});
+</script>
+
+</body>
+</html>
